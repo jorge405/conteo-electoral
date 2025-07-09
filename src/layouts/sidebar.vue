@@ -29,7 +29,10 @@
       <h3 class="font-md font-semibold mx-4 text-white">
         <slot name="title">Título</slot>
       </h3>
-      <img src="../assets/images/user.png" alt="#" class="bg-cover bg-no-repeat w-10 h-10 bg-slate-900 rounded-full mx-4">
+      <div class="flex items-center">
+        <img src="../assets/images/user.png" alt="#" class="bg-cover bg-no-repeat w-10 h-10 bg-slate-900 rounded-full mx-4">
+        <span @click="cerrarSesion"><i class="pi pi-power-off text-white w-10"></i></span>
+      </div>
     </div>
 
     <!-- Contenido principal -->
@@ -40,6 +43,8 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
+import CryptoJS from 'crypto-js';
 export default {
   name: "Sidebar",
   data() {
@@ -50,6 +55,11 @@ export default {
   methods: {
     toggleMenu() {
       this.menuAbierto = !this.menuAbierto;
+    },
+    cerrarSesion(){
+      Cookies.remove('access_token');
+      Cookies.remove('refresh_token');
+      this.$router.push('/');
     }
   }
 }

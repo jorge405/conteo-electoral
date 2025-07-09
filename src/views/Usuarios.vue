@@ -2,13 +2,14 @@
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css'; // for React, Vue and Svelt
 import Sidebar from '../layouts/sidebar.vue';
-
+import crearUsuario from '../components/usuarios/crearUsuario.vue';
 export default{
     data(){
 
     },
     components:{
-        Sidebar
+        Sidebar,
+        crearUsuario
     }
 }
 
@@ -17,6 +18,8 @@ export default{
 <template>
 <Sidebar>
     <template #title>Usuarios</template>
-    <span>body</span>
+    <div class=" flex">
+        <crearUsuario></crearUsuario>
+    </div>
 </Sidebar>
 </template>

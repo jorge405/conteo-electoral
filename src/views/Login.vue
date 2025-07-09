@@ -26,10 +26,10 @@ export default{
         if (!Cookies.get('access_token') && !Cookies.get('refresh_token')) {
         try {
             axios.post('https://colecto.mittril.com/public/consumer/login', {
-                username: 'colectoapp',
-                password: '5893589300'
+                username: "colectoapp",
+                password: "5893589300" 
             }).then((response) => {
-                console.log(response.data);
+                
                 const tokenCifrado= CryptoJS.AES.encrypt(response.data.token, clave).toString();
                 const refreshTokenCifrado = CryptoJS.AES.encrypt(response.data.refreshToken, clave).toString();
                 Cookies.set('access_token', tokenCifrado, { expires: 1 });
@@ -74,22 +74,22 @@ export default{
 </script>
 
 <template>
-    <div class="fixed inset-0 min-h-screen min-w-screen bg-linear-to-t from-slate-900    to-slate-950 ">
-        <div class="flex flex-col items-center space-y-10 justify-center mt-20 bg-gray-400/50 mx-10 rounded-md pt-10 pb-20 z-50 ">
+    <div class="fixed inset-0 min-h-screen min-w-screen bg-linear-to-b from-slate-900    to-slate-950 ">
+        <div class="flex flex-col items-center space-y-10 justify-center mt-20 bg-transparent mx-10 rounded-md pt-10 pb-20 z-50 ">
         <img src="../assets/images/imgenVoto.jpg" class=" bg-no-repeat bg-cover w-20 h-20 rounded-lg mx-10" alt="">
-        <div>
+        <div class=" w-full">
             <form method="post">
-                <div class=" block relative">
-                    <label for="" class=" block mb-2 text-sm font-medium ">Usuario</label>
-                    <input type="text" v-model="usuario" class=" bg-gray-200 text-sm  rounded-lg border border-gray-300 p-2 w-full" placeholder="ingrese su usuario">
+                <div class=" block">
+                    <label for="" class=" block mb-2 text-sm font-medium font-Outfit text-gray-400 ">Usuario</label>
+                    <input type="text" v-model="usuario" class=" bg-gray-200/70 text-sm  rounded-lg border border-gray-300 p-3 w-full" placeholder="ingrese su usuario">
                 </div>
                 <div class=" block mt-4">
-                    <label for="" class=" block mb-2 text-sm font-medium">Password</label>
-                    <input type="password" v-model="pass" class=" bg-gray-200 text-sm rounded-lg border border-gray-300 p-2 w-full" placeholder="ingrese su contraseña">
+                    <label for="" class=" block mb-2 text-sm font-medium font-Outfit text-gray-400">Password</label>
+                    <input type="password" v-model="pass" class=" bg-gray-200/70 text-sm rounded-lg border border-gray-300 p-3 w-full" placeholder="ingrese su contraseña">
                 </div>
             </form>
             <div class="block mt-5">
-                <button type="button" @click="envioLogin" class=" w-full bg-blue-800 rounded-lg p-2 text-white">Ingresar</button>
+                <button type="button" @click="envioLogin" class=" w-full bg-blue-800 font-Outfit rounded-lg p-3 text-white hover:bg-blue-900">Ingresar</button>
             </div>
         </div>
         
