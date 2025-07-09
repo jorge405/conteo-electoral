@@ -1,0 +1,101 @@
+<script>
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css'; 
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import CryptoJS from 'crypto-js';
+import api from '../services/apiServices.js';
+const notyf = new Notyf()
+
+export default{
+    data(){
+        return{
+            usuario:'',
+            pass:'',
+            token:'',
+            refreshToken:''
+        }
+    },
+    mounted(){
+        this.firstToken();
+    },
+    methods:{
+        firstToken(){
+        const clave = "conteoElectoralmittril";
+        Cookies.set('clave',clave)
+        if (!Cookies.get('access_token') && !Cookies.get('refresh_token')) {
+        try {
+            axios.post('https://colecto.mittril.com/public/consumer/login', {
+                username: 'colectoapp',
+                password: '5893589300'
+            }).then((response) => {
+                console.log(response.data);
+                const tokenCifrado= CryptoJS.AES.encrypt(response.data.token, clave).toString();
+                const refreshTokenCifrado = CryptoJS.AES.encrypt(response.data.refreshToken, clave).toString();
+                Cookies.set('access_token', tokenCifrado, { expires: 1 });
+                Cookies.set('refresh_token', refreshTokenCifrado, { expires: 7 });
+                this.token= tokenCifrado;
+                this.refreshToken= refreshTokenCifrado;
+            });
+        } catch (error) {
+            console.log('Error al pedir el token', error);
+        }
+    } else {
+        return console.log('si hay tokens guardados');
+    }
+    },
+        envioLogin(){
+            const datos={
+                usuario:this.usuario,
+                pass:this.pass  
+            }
+            try {
+                api.post('login',datos)
+                .then(response =>{
+                    if(response.data.msj==='ok'){
+                        console.log(response)
+                        notyf.success('Bienvenido al sistema de conteo electoral');
+                        this.$router.push('/usuarios')          
+                    }else{
+                        notyf.error('credenciales incorrectas');
+                        this.usuario='';
+                        this.pass='';          
+                    }
+                })
+            } catch (error) {
+                console.log('ha ocurrido un error: ',error)
+            } 
+            
+            
+        }
+    }
+}
+
+</script>
+
+<template>
+    <div class="fixed inset-0 min-h-screen min-w-screen bg-linear-to-t from-slate-900    to-slate-950 ">
+        <div class="flex flex-col items-center space-y-10 justify-center mt-20 bg-gray-400/50 mx-10 rounded-md pt-10 pb-20 z-50 ">
+        <img src="../assets/images/imgenVoto.jpg" class=" bg-no-repeat bg-cover w-20 h-20 rounded-lg mx-10" alt="">
+        <div>
+            <form method="post">
+                <div class=" block relative">
+                    <label for="" class=" block mb-2 text-sm font-medium ">Usuario</label>
+                    <input type="text" v-model="usuario" class=" bg-gray-200 text-sm  rounded-lg border border-gray-300 p-2 w-full" placeholder="ingrese su usuario">
+                </div>
+                <div class=" block mt-4">
+                    <label for="" class=" block mb-2 text-sm font-medium">Password</label>
+                    <input type="password" v-model="pass" class=" bg-gray-200 text-sm rounded-lg border border-gray-300 p-2 w-full" placeholder="ingrese su contraseña">
+                </div>
+            </form>
+            <div class="block mt-5">
+                <button type="button" @click="envioLogin" class=" w-full bg-blue-800 rounded-lg p-2 text-white">Ingresar</button>
+            </div>
+        </div>
+        
+    </div>
+    
+    </div>
+    
+</template>
+
