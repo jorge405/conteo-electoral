@@ -13,6 +13,16 @@ const router = createRouter({
       path:'/usuarios',
       name:'usuarios',
       component:Usuarios
+    },
+    {
+      path:'/asignar',
+      name:'asignar',
+      component:()=> import('../views/usuarios/asignar.vue')
+    },
+    {
+      path:'/crearUsuario',
+      name:'crearUsuario',
+      component:()=> import('../views/usuarios/crearUsuario.vue')
     }
   ],
 })

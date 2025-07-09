@@ -11,9 +11,9 @@
           <i class="pi pi-bars text-white text-xl cursor-pointer" @click="toggleMenu"></i>
         </div>
         <ul class="mt-6 space-y-4 px-6">
-          <li><i class="pi pi-home mr-4 text-white"></i><a href="#" class="text-white hover:text-blue-400 transition">Inicio</a></li>
-          <li><i class="pi pi-user mr-4 text-white"></i><a href="#" class="text-white hover:text-blue-400 transition">Crear Usuario</a></li>
-          <li><i class="pi pi-check-square mr-4 text-white"></i><a href="#" class="text-white hover:text-blue-400 transition">Asignar</a></li>
+          <li><i class="pi pi-home mr-4 text-white"></i><router-link to="/" class="text-white hover:text-blue-400 transition">Inicio</router-link></li>
+          <li><i class="pi pi-user mr-4 text-white"></i><router-link to="/crearUsuario" class="text-white hover:text-blue-400 transition">Crear Usuario</router-link></li>
+          <li><i class="pi pi-check-square mr-4 text-white"></i><router-link to="/asignar" class="text-white hover:text-blue-400 transition">Asignar</router-link></li>
         </ul>
       </div>
     </transition>
@@ -45,6 +45,7 @@
 <script>
 import Cookies from 'js-cookie';
 import CryptoJS from 'crypto-js';
+import { RouterLink } from 'vue-router';
 export default {
   name: "Sidebar",
   data() {

@@ -53,7 +53,7 @@ export default{
                 api.post('login',datos)
                 .then(response =>{
                     if(response.data.msj==='ok'){
-                        console.log(response)
+                        
                         notyf.success('Bienvenido al sistema de conteo electoral');
                         this.$router.push('/usuarios')          
                     }else{
