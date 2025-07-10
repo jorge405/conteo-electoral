@@ -12,6 +12,7 @@ export default{
 
 <template>
 <sidebar>
+<template #title>Lista de Municipios</template>
 <div class=" flex flex-col">
     <asignar></asignar>
 </div>
