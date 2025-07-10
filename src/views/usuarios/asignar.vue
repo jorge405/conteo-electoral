@@ -12,7 +12,9 @@ export default{
 
 <template>
 <sidebar>
-<asignar></asignar>
+<div class=" flex flex-col">
+    <asignar></asignar>
+</div>
 <router-view></router-view>
 </sidebar>
 </template>
