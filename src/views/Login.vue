@@ -55,6 +55,8 @@ export default{
                     if(response.data.msj==='ok'){
                         
                         notyf.success('Bienvenido al sistema de conteo electoral');
+                        const userTipo= CryptoJS.AES.encrypt(response.data.tipo,Cookies.get('clave')).toString();
+                        Cookies.set('tipo',userTipo)
                         this.$router.push('/usuarios')          
                     }else{
                         notyf.error('credenciales incorrectas');
