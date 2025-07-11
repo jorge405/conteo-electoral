@@ -3,7 +3,7 @@ import api from '../../services/apiServices.js';
 import { Notyf } from 'notyf';
 import Cookies from 'js-cookie'
 import CryptoJS from 'crypto-js';
-
+import Tesseract from 'tesseract.js';
 const notyf= new Notyf()
 
 export default{
@@ -15,6 +15,14 @@ export default{
             selectedRecinto:'',
             currentPage:1,
             itemsPerPage:8,
+            textoExtraido:'',
+            procesando:false,
+            datosExtraidos:{
+                nombre:'',
+                cedula:'',
+                direccion:'',
+                telefono:''
+            }
         }
     },
     mounted(){
@@ -22,6 +30,39 @@ export default{
         
     },
     methods:{
+        async procesarImagen(event){
+            const file= event.target.files[0];
+            if (!file) return
+            const image= URL.createObjectURL(file);
+            this.procesando=true;
+            this.textoExtraido='';
+
+            this.datosExtraidos={
+                nombre:'',
+                cedula:'',
+                direccion:'',
+                telefono:''
+            }
+            try {
+                const result= await Tesseract.recognize(image, 'spa',{
+                    logger: m=> console.log(m)
+                })
+
+                this.textoExtraido = result.data.text;
+                const texto= result.data.text;
+                // extraer campos con regex 
+                this.datosExtraidos.nombre= texto.match(/Nombre:\s*(.+)/i)?.[1]?.trim() || ''
+                this.datosExtraidos.cedula = texto.match(/C[ée]dula:\s*(\d+)/i)?.[1]?.trim() || ''
+                this.datosExtraidos.direccion = texto.match(/Dirección:\s*(.+)/i)?.[1]?.trim() || ''
+                this.datosExtraidos.telefono = texto.match(/Tel[eé]fono:\s*(\d+)/i)?.[1]?.trim() || ''
+
+            } catch (error) {
+                this.textoExtraido=   'Error al procesar la imagen'
+                console.error(err)
+            } finally{
+                this.procesando=false;
+            }
+        },
         goToPage(page){
             if (page >= 1 && page <= this.totalPages) {
                 this.currentPage= page;
@@ -94,7 +135,7 @@ export default{
                         <p class=" font medium text-gray-500 text-sm text-theme-xs">Recintos</p>
                        </th>
                        <th class="px-5 py-3 text-left w-3/11">
-                        <p class=" font medium text-gray-500 text-sm text-theme-xs">Asignar</p>
+                        <p class=" font medium text-gray-500 text-sm text-theme-xs">Subir acta</p>
                        </th>
                        
                     </tr>   
@@ -111,7 +152,7 @@ export default{
                         <td class="px-5 py-4 ">
                             <div class=" flex items-center gap-3">
                                 <div  class=" border border-gray-700 rounded-full p-2 hover:bg-blue-600 cursor-pointer">
-                                    <i class=" pi pi-external-link text-white"></i>
+                                    <input type="file" accept="image/" capture="environment" @change="procesarImagen"><i class=" pi pi-upload text-white"></i>
                                 </div>
                             </div>
                         </td>
@@ -139,6 +180,22 @@ export default{
                 </div>
 
         </div>    
+    </div>
+    <div v-if="procesando" class="mt-4 text-yellow-600">Procesando imagen...</div>
+
+    <div v-if="textoExtraido" class="mt-4">
+      <h3 class="font-semibold mb-2">Texto completo:</h3>
+      <pre class="bg-gray-100 p-2">{{ textoExtraido }}</pre>
+    </div>
+
+    <div v-if="datosExtraidos.nombre" class="mt-4">
+      <h3 class="font-semibold mb-2">Datos extraídos:</h3>
+      <ul class="bg-green-50 p-3 rounded">
+        <li><strong>Nombre:</strong> {{ datosExtraidos.nombre }}</li>
+        <li><strong>Cédula:</strong> {{ datosExtraidos.cedula }}</li>
+        <li><strong>Dirección:</strong> {{ datosExtraidos.direccion }}</li>
+        <li><strong>Teléfono:</strong> {{ datosExtraidos.telefono }}</li>
+      </ul>
     </div>
 </div>    
 
