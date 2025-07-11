@@ -124,7 +124,7 @@ export default{
     <div class=" w-full">
         <select v-model="selectedDepartamento" class=" bg-dark-900 h-11 w-full appearance-none rounded-lg   bg-none px-4 py-2.5 pr-11 text-sm  shadow-theme-xs  focus:border-gray-900 focus:outline-hidden focus:ring-3 focus:ring-gray-900/10 border border-gray-900 bg-gray-900 text-white/90 placeholder:text-white/30 focus:border-brand-800 mt-4">
             <option value="" selected disabled>Seleciona un departamento</option>
-            <option v-for="item in listDepartamento" :key="item.departamento" :value="item.departamento" class="bg-gray-900 text-gray-400 roundedxl">
+            <option v-for="item in listDepartamento" :key="item.departamento" :value="item.departamento" class="bg-gray-900 text-gray-400 rounded-xl">
                             {{ item.departamento }}
             </option>
         </select>
@@ -156,7 +156,7 @@ export default{
                         <td class="px-5 py-4 ">
                             <div class=" flex items-center gap-3">
                                 <div @click="abrirModal(dep)" class=" border border-gray-700 rounded-full p-2 hover:bg-blue-600 cursor-pointer">
-                                    <i class=" pi pi-check text-white"></i>
+                                    <i class=" pi pi-external-link text-white"></i>
                                 </div>
                             </div>
                         </td>
@@ -235,7 +235,7 @@ export default{
                             <td class="px-5 py-4 ">
                                 <div class="flex items-center gap-3">
                                     <div @click="asignarPermiso(user)" class=" bg-gray-600 rounded-full p-2 hover:bg-blue-600 cursor-pointer">
-                                        <i class="pi pi-check text-white cursor-pointer"></i>
+                                        <i class="pi pi-check text-white cursor-pointer hover:bg-blue-600"></i>
                                     </div>
                                 </div>
                             </td>

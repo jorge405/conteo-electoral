@@ -13,7 +13,8 @@ export default{
             usuario:'',
             pass:'',
             token:'',
-            refreshToken:''
+            refreshToken:'',
+            clave:'conteoElectoralmittril'
         }
     },
     mounted(){
@@ -53,11 +54,17 @@ export default{
                 api.post('login',datos)
                 .then(response =>{
                     if(response.data.msj==='ok'){
-                        
+                        const encryptUsuario= CryptoJS.AES.encrypt(datos.usuario,this.clave).toString();
+                        Cookies.set('usuario',encryptUsuario);
                         notyf.success('Bienvenido al sistema de conteo electoral');
                         const userTipo= CryptoJS.AES.encrypt(response.data.tipo,Cookies.get('clave')).toString();
                         Cookies.set('tipo',userTipo)
-                        this.$router.push('/usuarios')          
+                        const decriptTipo= CryptoJS.AES.decrypt(Cookies.get('tipo'),this.clave).toString(CryptoJS.enc.Utf8);
+                        
+                        if (decriptTipo==='ADMINISTRADOR') {
+                            this.$router.push('/usuarios')              
+                        }else if(decriptTipo==='MUNICIPIO')
+                        this.$router.push('/municipio')          
                     }else{
                         notyf.error('credenciales incorrectas');
                         this.usuario='';
