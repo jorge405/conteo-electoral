@@ -54,7 +54,7 @@ export default{
 </script>
 
 <template>
-<div class=" bg-tranparent flex flex-col items-center justify-center mt-5 mx-4 rounded-lg py-10 px-5">
+<div class=" bg-gray-900 flex flex-col items-center justify-center mt-5 mx-4 rounded-lg py-10 px-5">
     <form method="post">
         <div class="block mb-4">
             <label for="" class=" text-white font-light font-Outfit font-sm mb-4">Usuario</label>

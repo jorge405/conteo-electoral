@@ -15,9 +15,10 @@
           <li><i class="pi pi-user mr-4 text-white"></i><router-link to="/crearUsuario" class="text-white hover:text-blue-400 transition">Crear Usuario</router-link></li>
           <li><i class="pi pi-check-square mr-4 text-white"></i><router-link to="/asignar" class="text-white hover:text-blue-400 transition">Asignar</router-link></li>
         </ul>
-        <ul v-if="['/municipio','/acta'].includes($route.path)" class="mt-6 space-y-4 px-6" >
+        <ul v-if="['/municipio','/acta','/ListaActa'].includes($route.path)" class="mt-6 space-y-4 px-6" >
           <li><i class="pi pi-home mr-4 text-white"></i><router-link to="/municipio" class="text-white hover:text-blue-400 transition">Municipio</router-link></li>
           <li><i class="pi pi-file mr-4 text-white"></i><router-link to="/acta" class="text-white hover:text-blue-400 transition">Cargar Acta</router-link></li>
+          <li><i class="pi pi-file mr-4 text-white"></i><router-link to="/ListaActa" class="text-white hover:text-blue-400 transition">Lista de Actas</router-link></li>
         </ul>
       </div>
     </transition>

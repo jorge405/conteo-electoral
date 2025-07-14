@@ -33,6 +33,11 @@ const router = createRouter({
       path:'/acta',
       name:'acta',
       component:()=>import('../views/municipio/cargaActa.vue')
+    },
+    {
+      path:'/listaActa',
+      name:'ListaActa',
+      component:()=>import('../views/municipio/ListaActas.vue')
     }
   ],
 })

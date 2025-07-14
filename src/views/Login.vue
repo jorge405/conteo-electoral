@@ -65,7 +65,7 @@ export default{
                             this.$router.push('/usuarios')              
                         }else if(decriptTipo==='MUNICIPIO')
                         this.$router.push('/municipio')          
-                    }else{
+                    }else if(response.data.msj==='error'){
                         notyf.error('credenciales incorrectas');
                         this.usuario='';
                         this.pass='';          
