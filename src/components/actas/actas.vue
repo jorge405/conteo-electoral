@@ -29,7 +29,8 @@ export default{
             voto_blanco:0,
             voto_nulo:0,
             voto_valido:0,
-            searchRecinto:''
+            searchRecinto:'',
+            imageID:''
 
         }
     },
@@ -38,14 +39,7 @@ export default{
         
     },
     methods:{
-        subiftp(){
-            
-            try {
-                axios.post('http://backendftp.mittril.com/upload.php',)
-            } catch (error) {
-                
-            }
-        },
+        
         abrirModal(rec) {
             this.modalVisible = true;
             // Puedes usar rec para asociar el modal al recinto si lo necesitas
@@ -137,23 +131,64 @@ export default{
         fromData.append('nombreFoto','archivo1');
 
         try {
-            axios.post('http://conteoElectoral.mittril.com/upload.php',fromData,{
+            axios.post('http://endpointParasubirImagen/upload.php',fromData,{
                 headers:{
                     'Content-Type':'multipart/form-data'
                 }
             })
             .then(response=>{
-                if (response.data.status=='ok') {
+                if (response.data.status=='ok' || response.data.id) {
+                    this.imageID= response.data.id;
                     notyf.success('archivo subido correctamnete')
                 }
             })
         } catch (error) {
             console.log('ha ocurrido el siguiente error', error)
         }
-        notyf.success('Imagen lista para subir');
-        // Aquí puedes agregar lógica para enviar la imagen a tu backend si lo necesitas
-    },
-
+        
+        },
+        subirActa(){
+            if (this.nombreFoto==='' || this.nro_mesa==='' || this.cod_mesa==='') {
+                notyf.error('debe llenar todos los campos obligatoriamente')
+                return ;
+            }
+            try {
+               api.post('endpointSubirAta',{
+                nro:'',
+                codigo:'',
+                municipio:'',
+                recinto:'',
+                acta:'',  // id que mandara el endpoint si sube la imagen para conectar con otra tabla
+                cant_votos:'',
+                votos_validos:'',
+                votos_nulos:'',
+                votos_blancos:''
+               }) 
+               .then(response=>{
+                 if (response.data.status='creado') {
+                    notyf.success('acta registrada correctamente')
+                    this.nro_mesa='';
+                    this.cod_mesa='';
+                    this.cant_votos=0;
+                    this.voto_valido=0;
+                    this.voto_nulo=0;
+                    this.voto_blanco=0;
+                    this.nombreFoto=''
+                 }else if(response.data.status==='error'){
+                    notyf.error('no se pudo crear el acta vuelva a intentarlo');
+                    this.nro_mesa='';
+                    this.cod_mesa='';
+                    this.cant_votos=0;
+                    this.voto_valido=0;
+                    this.voto_nulo=0;
+                    this.voto_blanco=0;
+                    this.nombreFoto=''
+                 }
+               })
+            } catch (error) {
+                console.log('ha ocurrido un error al registrar acta', error)
+            }
+        }
     },
     computed:{
         paginatedRecinto(){
@@ -180,6 +215,15 @@ export default{
     watch:{
         permiso(newval){
             this.listaRecinto();
+        },
+        nombreFoto(newval){
+
+        },
+        cod_mesa(newval){
+
+        },
+        nro_mesa(newval){
+
         }
         
     }
@@ -274,15 +318,18 @@ export default{
             </div>
             <div class=" block mb-4">
                 <label  class=" text-white font-light font-Outfit font-sm mb-4 ">Nombre del archivo</label>
-                <input type="text" v-model="nombreFoto" placeholder="Escribe el nombre de la foto" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
+                <input type="text" v-model="nombreFoto"  placeholder="Escribe el nombre de la foto" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
+                <span v-if="nombreFoto===''" class=" text-red-600 text-sm font-Outfit"> Campo requerido!</span>
             </div>
             <div class="block mb-4">
                 <label class="text-white font-light font-Outfit font-sm mb-4">Codigo Mesa</label>
                 <input type="text" v-model="cod_mesa" placeholder="ingrese codigo mesa" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
+                <span v-if="cod_mesa===''" class=" text-red-600 text-sm font-Outfit"> Campo requerido!</span>
             </div>
             <div class="block mb-4">
                 <label class="text-white font-light font-Outfit font-sm mb-2">Nro Mesa</label>
                 <input type="text" v-model="nro_mesa" placeholder="ingrese nro mesa" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
+                <span v-if="nro_mesa===''" class=" text-red-600 text-sm font-Outfit"> Campo requerido!</span>
             </div>
             <div class="mb-4 grid grid-cols-2 gap-x-2">
                 <div>
@@ -304,7 +351,7 @@ export default{
                     <input type="number" inputmode="numeric" pattern="[0-9]*" v-model="voto_valido"  class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
                 </div>
             </div>
-            <button type="button" @click="crearUsuario" class="bg-blue-600 text-white font-medium font-Outfit w-full p-2.5 rounded-lg mt-5">Registrar Acta</button>
+            <button type="button" @click="subirActa" class="bg-blue-600 text-white font-medium font-Outfit w-full p-2.5 rounded-lg mt-3">Registrar Acta</button>
         </form>
     </div>
         </div>
