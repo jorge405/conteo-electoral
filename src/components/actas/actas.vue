@@ -122,30 +122,43 @@ export default{
                 console.log('ha ocurrido un error al obtener los recintos: ',error)
             } 
         },
-        subirImagen(event) {
+        async subirImagen(event) {
         const file = event.target.files[0];
         if (!file) return;
-        this.imagenPreview = URL.createObjectURL(file);
-        const fromData= new FormData();
-        fromData.append('image',file);
-        fromData.append('nombreFoto','archivo1');
+        
+        
 
         try {
-            axios.post('http://endpointParasubirImagen/upload.php',fromData,{
+            const base64= await this.convertirABase64(file)
+            const payload= {
+                image:base64,
+                user_id:1
+            }
+
+            const response= await axios.post('https://actas.mittril.com/api/upload',payload,{
                 headers:{
-                    'Content-Type':'multipart/form-data'
+                    'Content-Type':'application/json'
                 }
             })
-            .then(response=>{
-                if (response.data.status=='ok' || response.data.id) {
-                    this.imageID= response.data.id;
-                    notyf.success('archivo subido correctamnete')
-                }
-            })
+            
+            if (response.data.success===true) {
+                console.log(response.data)
+                notyf.success('imagen subida')
+            }else{
+                notyf.error('error al subir la imagen');
+            }
         } catch (error) {
-            console.log('ha ocurrido el siguiente error', error)
+            console.log('ha ocurrido un error al subir la imagen:', error);
         }
         
+        },
+        convertirABase64(file) {
+            return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+            });
         },
         subirActa(){
             if (this.nombreFoto==='' || this.nro_mesa==='' || this.cod_mesa==='') {
@@ -182,7 +195,7 @@ export default{
                     this.voto_valido=0;
                     this.voto_nulo=0;
                     this.voto_blanco=0;
-                    this.nombreFoto=''
+                    this.nombreFoto='' 
                  }
                })
             } catch (error) {

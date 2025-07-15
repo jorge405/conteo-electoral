@@ -19,12 +19,29 @@ export default{
     },
     mounted(){
         this.firstToken();
+        window.addEventListener('beforeunload',()=>{
+            Cookies.remove('access_token')
+            Cookies.remove('refresh_token')
+            Cookies.remove('usuario')
+            Cookies.remove('tipo')
+        })
+        document.addEventListener('visibilitychange',()=>{
+            if (document.visibilityState === 'hidden') {
+                Cookies.remove('access_token')
+                Cookies.remove('refresh_token')
+                Cookies.remove('usuario')
+                Cookies.remove('tipo')
+            }
+        })
     },
     methods:{
         firstToken(){
         const clave = "conteoElectoralmittril";
         Cookies.set('clave',clave)
-        if (!Cookies.get('access_token') && !Cookies.get('refresh_token')) {
+        const access_token= Cookies.get('access_token')
+        const refresh_token= Cookies.get('refresh_token')
+        if
+         (!access_token && !refresh_token) {
         try {
             axios.post('https://colecto.mittril.com/public/consumer/login', {
                 username: "colectoapp",
@@ -41,10 +58,10 @@ export default{
         } catch (error) {
             console.log('Error al pedir el token', error);
         }
-    } else {
-        return console.log('si hay tokens guardados');
-    }
-    },
+        } else {
+            return console.log('si hay tokens guardados');
+        }
+    }, 
         envioLogin(){
             const datos={
                 usuario:this.usuario,
