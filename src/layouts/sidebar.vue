@@ -66,6 +66,10 @@ export default {
     cerrarSesion(){
       Cookies.remove('access_token');
       Cookies.remove('refresh_token');
+      Cookies.remove('municipio');
+      Cookies.remove('recinto');
+      Cookies.remove('tipo');
+      Cookies.remove('usuario');
       this.$router.push('/');
     },
     

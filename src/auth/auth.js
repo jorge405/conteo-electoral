@@ -1,6 +1,8 @@
 import CryptoJS from 'crypto-js';
 import Cookies from "js-cookie";
 
+
+const clave='conteoElectoralmittril'
 export default{
     accessToken: Cookies.get('access_token') || null,
     refreshToken: Cookies.get('refresh_token') || null,
@@ -15,7 +17,8 @@ export default{
     },
 
     getAccessToken(){
-        const decryptedToken = CryptoJS.AES.decrypt(Cookies.get('access_token'),Cookies.get('clave')).toString(CryptoJS.enc.Utf8);
+        
+        const decryptedToken = CryptoJS.AES.decrypt(Cookies.get('access_token'),clave).toString(CryptoJS.enc.Utf8);
         return decryptedToken;
     },
 

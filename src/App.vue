@@ -1,7 +1,8 @@
 <script>
 
 import { RouterLink, RouterView } from 'vue-router'
-
+import Cookies from 'js-cookie';
+import CryptoJS from 'crypto-js';
 export default{
   data(){
     return{

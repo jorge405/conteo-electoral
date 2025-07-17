@@ -23,8 +23,8 @@ export default{
     },
     methods:{
         firstToken(){
-        const clave = "conteoElectoralmittril";
-        Cookies.set('clave',clave)
+        
+        
         const access_token= Cookies.get('access_token')
         const refresh_token= Cookies.get('refresh_token')
         if
@@ -35,8 +35,8 @@ export default{
                 password: "5893589300" 
             }).then((response) => {
                 
-                const tokenCifrado= CryptoJS.AES.encrypt(response.data.token, clave).toString();
-                const refreshTokenCifrado = CryptoJS.AES.encrypt(response.data.refreshToken, clave).toString();
+                const tokenCifrado= CryptoJS.AES.encrypt(response.data.token, this.clave).toString();
+                const refreshTokenCifrado = CryptoJS.AES.encrypt(response.data.refreshToken,this.clave).toString();
                 Cookies.set('access_token', tokenCifrado, { expires: 1 });
                 Cookies.set('refresh_token', refreshTokenCifrado, { expires: 7 });
                 this.token= tokenCifrado;
@@ -61,7 +61,7 @@ export default{
                         const encryptUsuario= CryptoJS.AES.encrypt(datos.usuario,this.clave).toString();
                         Cookies.set('usuario',encryptUsuario);
                         notyf.success('Bienvenido al sistema de conteo electoral');
-                        const userTipo= CryptoJS.AES.encrypt(response.data.tipo,Cookies.get('clave')).toString();
+                        const userTipo= CryptoJS.AES.encrypt(response.data.tipo,this.clave).toString();
                         Cookies.set('tipo',userTipo)
                         const decriptTipo= CryptoJS.AES.decrypt(Cookies.get('tipo'),this.clave).toString(CryptoJS.enc.Utf8);
                         
@@ -90,7 +90,7 @@ export default{
     <div class="fixed inset-0 min-h-screen min-w-screen bg-linear-to-b from-slate-900    to-slate-950 ">
         <div class="flex flex-col items-center space-y-10 justify-center mt-20 bg-transparent mx-10 rounded-md pt-10 pb-20 z-50 ">
         <img src="../assets/images/imgenVoto.jpg" class=" bg-no-repeat bg-cover w-20 h-20 rounded-lg mx-10" alt="">
-        <div class=" w-full">
+        <div class=" w-full lg:max-w-lg md:max-w-lg">
             <form method="post">
                 <div class=" block">
                     <label for="" class=" block mb-2 text-sm font-medium font-Outfit text-gray-400 ">Usuario</label>

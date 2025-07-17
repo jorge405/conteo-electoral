@@ -3,6 +3,24 @@ import api from '../../services/apiServices.js';
 import { Notyf } from 'notyf';
 
 const notyf= Notyf();
+
+
+export default{
+    data(){
+        return{
+
+        }
+    },
+    methods:{
+        listActas(){
+            try {
+                api.post('')
+            } catch (error) {
+                
+            }
+        }
+    }
+}
 </script>
 
 

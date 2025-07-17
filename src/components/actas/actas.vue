@@ -4,7 +4,7 @@ import api from '../../services/apiServices.js';
 import { Notyf } from 'notyf';
 import Cookies from 'js-cookie'
 import CryptoJS from 'crypto-js';
-import Tesseract from 'tesseract.js';
+
 const notyf= new Notyf()
 
 
@@ -18,10 +18,6 @@ export default{
             currentPage:1,
             itemsPerPage:8,
             modalVisible: false,
-            usuario: '',
-            pass: '',
-            nombreCompleto: '',
-            tipo: '',
             nombreFoto:'',
             cod_mesa:'',
             nro_mesa:'',
@@ -31,7 +27,6 @@ export default{
             voto_valido:0,
             searchRecinto:'',
             imageID:'',
-            imageURL:'',
             imageFile:''
 
         }
@@ -43,49 +38,24 @@ export default{
     methods:{
         
         abrirModal(rec) {
+            
             this.modalVisible = true;
+            const encryptRecinto= CryptoJS.AES.encrypt(rec.recinto,this.clave).toString()
+            Cookies.set('recinto',encryptRecinto)
             // Puedes usar rec para asociar el modal al recinto si lo necesitas
         },
         cerrarModal() {
             this.modalVisible = false;
-            this.usuario = '';
-            this.pass = '';
-            this.nombreCompleto = '';
-            this.tipo = '';
+            this.nro_mesa='';
+            this.cod_mesa='';
+            this.voto_blanco=0;
+            this.voto_valido=0;
+            this.voto_nulo=0;
+            this.cant_votos=0;
+            this.imageID='';
+
         },
-        async procesarImagen(event){
-            const file= event.target.files[0];
-            if (!file) return
-            const image= URL.createObjectURL(file);
-            this.procesando=true;
-            this.textoExtraido='';
-
-            this.datosExtraidos={
-                nombre:'',
-                cedula:'',
-                direccion:'',
-                telefono:''
-            }
-            try {
-                const result= await Tesseract.recognize(image, 'spa',{
-                    logger: m=> console.log(m)
-                })
-
-                this.textoExtraido = result.data.text;
-                const texto= result.data.text;
-                // extraer campos con regex 
-                this.datosExtraidos.nombre= texto.match(/Nombre:\s*(.+)/i)?.[1]?.trim() || ''
-                this.datosExtraidos.cedula = texto.match(/C[ée]dula:\s*(\d+)/i)?.[1]?.trim() || ''
-                this.datosExtraidos.direccion = texto.match(/Dirección:\s*(.+)/i)?.[1]?.trim() || ''
-                this.datosExtraidos.telefono = texto.match(/Tel[eé]fono:\s*(\d+)/i)?.[1]?.trim() || ''
-
-            } catch (error) {
-                this.textoExtraido=   'Error al procesar la imagen'
-                console.error(err)
-            } finally{
-                this.procesando=false;
-            }
-        },
+        
         goToPage(page){
             if (page >= 1 && page <= this.totalPages) {
                 this.currentPage= page;
@@ -99,7 +69,8 @@ export default{
                 .then(response=>{
                     if (!response.data.entry==[]) {
                         this.permiso=response.data.entry;
-                        
+                        const encryptMunicipio= CryptoJS.AES.encrypt(this.permiso[0].municipio.replace(/ /g, '-'),this.clave).toString();
+                        Cookies.set('municipio',encryptMunicipio)
                     }else{
                         return []
                     }
@@ -132,7 +103,7 @@ export default{
             this.imageURL='';
         },
         async subirImagen(event) {
-        const file = this.imageFile;
+            const file= event.target.files[0]
         if (!file) return;
 
         try {
@@ -168,21 +139,25 @@ export default{
             });
         },
         subirActa(){
-            if (this.nombreFoto==='' || this.nro_mesa==='' || this.cod_mesa==='') {
+            if ( this.nro_mesa==='' || this.cod_mesa==='') {
                 notyf.error('debe llenar todos los campos obligatoriamente')
                 return ;
             }
+            const decryptUser= CryptoJS.AES.decrypt(Cookies.get('usuario'),this.clave).toString(CryptoJS.enc.Utf8)
+            const decryptMunicipio= CryptoJS.AES.decrypt(Cookies.get('municipio'),this.clave).toString(CryptoJS.enc.Utf8);
+            const decryptRecinto= CryptoJS.AES.decrypt(Cookies.get('recinto'),this.clave).toString(CryptoJS.enc.Utf8);
             try {
-               api.post('endpointSubirAta',{
-                nro:'',
-                codigo:'',
-                municipio:'',
-                recinto:'',
-                acta:'',  // id que mandara el endpoint si sube la imagen para conectar con otra tabla
-                cant_votos:'',
-                votos_validos:'',
-                votos_nulos:'',
-                votos_blancos:''
+               api.post('reg_acta',{
+                usuario:decryptUser,
+                nro:this.nro_mesa,
+                codigo:this.cod_mesa,
+                municipio:decryptMunicipio,
+                recinto:decryptRecinto,
+                acta:this.imageID,  // id que mandara el endpoint si sube la imagen para conectar con otra tabla
+                cant_votos:this.cant_votos,
+                votos_validos:this.voto_valido,
+                votos_nulos:this.voto_nulo,
+                votos_blancos:this.voto_blanco
                }) 
                .then(response=>{
                  if (response.data.status='creado') {
@@ -339,17 +314,17 @@ export default{
             <div class=" block mb-4">
                 <label  class=" text-white font-light font-Outfit font-sm mb-4 ">Nombre del archivo</label>
                 <input type="text" v-model="nombreFoto"  placeholder="Escribe el nombre de la foto" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
-                <span v-if="nombreFoto===''" class=" text-red-600 text-sm font-Outfit"> Campo requerido!</span>
+                
             </div>
             <div class="block mb-4">
                 <label class="text-white font-light font-Outfit font-sm mb-4">Codigo Mesa</label>
                 <input type="text" v-model="cod_mesa" placeholder="ingrese codigo mesa" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
-                <span v-if="cod_mesa===''" class=" text-red-600 text-sm font-Outfit"> Campo requerido!</span>
+                <span v-if="cod_mesa===''" inputmode="numeric" pattern="[0-9]*" class=" text-red-600 text-sm font-Outfit"> Campo requerido!</span>
             </div>
             <div class="block mb-4">
                 <label class="text-white font-light font-Outfit font-sm mb-2">Nro Mesa</label>
                 <input type="text" v-model="nro_mesa" placeholder="ingrese nro mesa" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
-                <span v-if="nro_mesa===''" class=" text-red-600 text-sm font-Outfit"> Campo requerido!</span>
+                <span v-if="nro_mesa===''" inputmode="numeric" pattern="[0-9]*" class=" text-red-600 text-sm font-Outfit"> Campo requerido!</span>
             </div>
             <div class="mb-4 grid grid-cols-2 gap-x-2">
                 <div>
