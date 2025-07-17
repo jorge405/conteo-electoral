@@ -125,9 +125,12 @@ export default{
         async subirImagen(event) {
         const file = event.target.files[0];
         if (!file) return;
-        
-        
 
+        this.nombreFoto= file.name;
+        if (this.nombreFoto==='') {
+            notyf.error('elige un nombre para el archivo!')
+            return ;
+        }
         try {
             const base64= await this.convertirABase64(file)
             const payload= {

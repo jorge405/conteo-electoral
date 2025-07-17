@@ -19,20 +19,7 @@ export default{
     },
     mounted(){
         this.firstToken();
-        window.addEventListener('beforeunload',()=>{
-            Cookies.remove('access_token')
-            Cookies.remove('refresh_token')
-            Cookies.remove('usuario')
-            Cookies.remove('tipo')
-        })
-        document.addEventListener('visibilitychange',()=>{
-            if (document.visibilityState === 'hidden') {
-                Cookies.remove('access_token')
-                Cookies.remove('refresh_token')
-                Cookies.remove('usuario')
-                Cookies.remove('tipo')
-            }
-        })
+        
     },
     methods:{
         firstToken(){
