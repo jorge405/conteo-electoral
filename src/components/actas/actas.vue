@@ -30,7 +30,9 @@ export default{
             voto_nulo:0,
             voto_valido:0,
             searchRecinto:'',
-            imageID:''
+            imageID:'',
+            imageURL:'',
+            imageFile:''
 
         }
     },
@@ -122,15 +124,17 @@ export default{
                 console.log('ha ocurrido un error al obtener los recintos: ',error)
             } 
         },
+        archivoSeleccionado(event){
+            const file= event.target.files[0];
+            if (!file) return;
+            this.imageFile= file;
+            this.nombreFoto='';
+            this.imageURL='';
+        },
         async subirImagen(event) {
-        const file = event.target.files[0];
+        const file = this.imageFile;
         if (!file) return;
 
-        this.nombreFoto= file.name;
-        if (this.nombreFoto==='') {
-            notyf.error('elige un nombre para el archivo!')
-            return ;
-        }
         try {
             const base64= await this.convertirABase64(file)
             const payload= {
@@ -145,7 +149,7 @@ export default{
             })
             
             if (response.data.success===true) {
-                console.log(response.data)
+                this.imageID=response.data.id;
                 notyf.success('imagen subida')
             }else{
                 notyf.error('error al subir la imagen');
