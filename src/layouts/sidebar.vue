@@ -35,8 +35,8 @@
         <slot name="title">Título</slot>
       </h3>
       <div class="flex items-center">
-        <img src="../assets/images/user.png" alt="#" class="bg-cover bg-no-repeat w-10 h-10 bg-slate-900 rounded-full mx-4">
-        <span @click="cerrarSesion"><i class="pi pi-power-off text-white w-10"></i></span>
+        <img src="../assets/images/user.png" alt="#" class="bg-cover bg-no-repeat w-10 h-10 bg-slate-900 rounded-full mx-4 ">
+        <span @click="cerrarSesion"><i class="pi pi-power-off text-white w-10 cursor-pointer"></i></span>
       </div>
     </div>
 

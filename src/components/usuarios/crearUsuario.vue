@@ -54,7 +54,7 @@ export default{
 </script>
 
 <template>
-<div class=" bg-gray-900 flex flex-col items-center justify-center mt-5 mx-4 rounded-lg py-10 px-5">
+<div class=" bg-gray-900 flex flex-col items-center justify-center mt-5 mx-4 rounded-lg py-10 px-5 md:min-w-xl md:mx-auto">
     <form method="post">
         <div class="block mb-4">
             <label for="" class=" text-white font-light font-Outfit font-sm mb-4">Usuario</label>
@@ -76,7 +76,7 @@ export default{
                 <option value="MUNICIPIO" class="bg-gray-300/70 font-light font-Outfit rounded-lg">MUNICIPIO</option>
             </select>
         </div>
-        <button type="button" @click="crearUsuario" class=" bg-blue-600 text-white font-medium font-Outfit w-full p-2.5 rounded-lg mt-5">Crear Usuario</button>
+        <button type="button" @click="crearUsuario" class=" bg-blue-800 hover:bg-blue-600 text-white font-medium font-Outfit w-full p-2.5 rounded-lg mt-5 cursor-pointer">Crear Usuario</button>
     </form>
 </div>
 

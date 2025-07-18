@@ -228,13 +228,13 @@ export default{
 
 <template>
 <div class="flex flex-col items-center justify-center mx-2 mt-4 bg-gray-900 min-h-screen w-full">
-    <div class="overflow-hidden rounded-xl border-gray-800 bg-white/[0.03] mt-4">
+    <div class="overflow-hidden rounded-xl border-gray-800 bg-white/[0.03] mt-4 md:w-3xl">
         <input type="text" v-model="searchRecinto" placeholder="Buscar recinto" class="bg-gray-400/70 p-2.5 font-Outfit rounded-lg mt-4 mb-2 mx-3">
         <div v-if="!listRecinto" class="flex justify-center items-center py-10">
             <span class="text-white text-lg font-Outfit"> Cargando recintos...</span>
         </div>
-        <div v-else class="max-w-sm overflow-x-visible custom-scrollbar">
-            <table class="min-w-sm">
+        <div v-else class="max-w-sm overflow-x-visible custom-scrollbar  ">
+            <table class="min-w-sm md:w-3xl md:mx-auto">
                 <thead>
                     <tr class="border-b border-gray-700">
                         <th class="px-5 py-3 text-left w-3/11">
@@ -264,11 +264,11 @@ export default{
                     </tr>
                 </tbody>
             </table>
-            <div class="flex justify-center items-center mt-4 mb-4 space-x-2">
+            <div class="flex  justify-center items-center mt-4 mb-4 space-x-2 w-full bg-green-300  ">
                 <button
                     @click="goToPage(currentPage - 1)"
                     :disabled="currentPage === 1"
-                    class="px-3 py-1 rounded bg-gray-800 text-white/80 hover:bg-gray-700 disabled:opacity-50"
+                    class="px-3 py-1 rounded bg-gray-800 text-white/80 hover:bg-gray-700 disabled:opacity-50 cursor-pointer"
                 >
                     Anterior
                 </button>
@@ -278,7 +278,7 @@ export default{
                 <button
                     @click="goToPage(currentPage + 1)"
                     :disabled="currentPage === totalPages"
-                    class="px-3 py-1 rounded bg-gray-800 text-white/80 hover:bg-gray-700 disabled:opacity-50"
+                    class="px-3 py-1 rounded bg-gray-800 text-white/80 hover:bg-gray-700 disabled:opacity-50 cursor-pointer"
                 >
                     Siguiente
                 </button>

@@ -131,8 +131,8 @@ export default{
     </div>
     <div class=" overflow-hidden rounded-xl border-gray-800 bg-white/[0.03] mt-4">
         <input type="text" placeholder="Buscar usuario" class=" bg-gray-400/70 p-2.5 font-Outfit rounded-lg mt-4 mb-2 mx-3">
-        <div class=" max-w-sm overflow-x-visible custom-scrollbar">
-            <table class=" min-w-sm">
+        <div class=" max-w-sm overflow-x-visible custom-scrollbar md:max-w-xl">
+            <table class=" min-w-sm md:min-w-xl">
                 <thead>
                     <tr class=" border-b border-gray-700">
                        <th class="px-5 py-3 text-left w-3/11">
@@ -200,7 +200,7 @@ export default{
       <input type="text" placeholder="Buscar usuario" class=" bg-gray-400/70 w-full p-2.5 font-Outfit rounded-lg mb-4">
       <div class="overflow-hidden rounded-xl border-gray-800 bg-white/[0.03]">
         <div class="max-w-sm overflow-x-visible custom-scrollbar">
-          <table class="min-w-sm">
+          <table class="min-w-sm md:min-w-xl">
                     <thead>
                         <tr class="border-b border-gray-700">
                             
