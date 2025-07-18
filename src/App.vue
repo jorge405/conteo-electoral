@@ -13,12 +13,17 @@ export default{
   },
   created(){
     this.iniciarDetectorInactividad();
+    window.addEventListener('beforeunload',()=>{
+      this.cerrarSesion();
+    })
   },
   methods:{
     cerrarSesion(){
       // Eliminar cookies de token
       Cookies.remove('access_token');
       Cookies.remove('refresh_token');
+      Cookies.remove('tipo');
+      Cookies.remove('usuario');
       // redirigir al login
 
       this.$router.push('/');

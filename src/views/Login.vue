@@ -24,11 +24,10 @@ export default{
     methods:{
         firstToken(){
         
-        
         const access_token= Cookies.get('access_token')
         const refresh_token= Cookies.get('refresh_token')
-        if
-         (!access_token && !refresh_token) {
+         
+        if(!access_token && !refresh_token) {
         try {
             axios.post('https://colecto.mittril.com/public/consumer/login', {
                 username: "colectoapp",
@@ -43,9 +42,11 @@ export default{
                 this.refreshToken= refreshTokenCifrado;
             });
         } catch (error) {
+            
             console.log('Error al pedir el token', error);
         }
         } else {
+            
             return console.log('si hay tokens guardados');
         }
     }, 
@@ -54,6 +55,7 @@ export default{
                 usuario:this.usuario,
                 pass:this.pass  
             }
+            if (!Cookies.get('access_token')) return ;
             try {
                 api.post('login',datos)
                 .then(response =>{
