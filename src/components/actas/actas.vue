@@ -233,8 +233,8 @@ export default{
         <div v-if="!listRecinto" class="flex justify-center items-center py-10">
             <span class="text-white text-lg font-Outfit"> Cargando recintos...</span>
         </div>
-        <div v-else class="max-w-sm overflow-x-visible custom-scrollbar  ">
-            <table class="min-w-sm md:w-3xl md:mx-auto">
+        <div v-else class="max-w-sm overflow-x-visible custom-scrollbar ">
+            <table class="min-w-sm md:min-w-3xl ">
                 <thead>
                     <tr class="border-b border-gray-700">
                         <th class="px-5 py-3 text-left w-3/11">
@@ -264,7 +264,7 @@ export default{
                     </tr>
                 </tbody>
             </table>
-            <div class="flex  justify-center items-center mt-4 mb-4 space-x-2 w-full bg-green-300  ">
+            <div class="flex  justify-center items-center mt-4 mb-4 space-x-2 ">
                 <button
                     @click="goToPage(currentPage - 1)"
                     :disabled="currentPage === 1"
