@@ -58,7 +58,8 @@ export default{
             try {
                 api.get('lista_usuario')
                 .then(response=>{
-                    this.listUser=response.data.entry;
+                    const listUser= response.data.entry.filter(user => user.tipo_us==='MUNICIPIO')
+                    this.listUser=listUser
                     //console.log(this.listUser);
                 })
             } catch (error) {
@@ -122,24 +123,24 @@ export default{
 <div class="flex flex-col items-center mx-5 mt-4 ">
     
     <div class=" w-full">
-        <select v-model="selectedDepartamento" class=" bg-dark-900 h-11 w-full appearance-none rounded-lg   bg-none px-4 py-2.5 pr-11 text-sm  shadow-theme-xs  focus:border-gray-900 focus:outline-hidden focus:ring-3 focus:ring-gray-900/10 border border-gray-900 bg-gray-900 text-white/90 placeholder:text-white/30 focus:border-brand-800 mt-4">
-            <option value="" selected disabled>Seleciona un departamento</option>
-            <option v-for="item in listDepartamento" :key="item.departamento" :value="item.departamento" class="bg-gray-900 text-gray-400 rounded-xl">
+        <select v-model="selectedDepartamento" class=" dark:bg-gray-900 bg-gray-300 h-11 w-full appearance-none rounded-lg font-Outfit   bg-none px-4 py-2.5 pr-11 text-sm  shadow-theme-xs      border dark:border-gray-900 border-gray-300  dark:text-white/90 text-gray-800  placeholder:text-white/30 focus:border-brand-800 mt-4">
+            <option value="" selected disabled class="font-Outfit">Seleciona un departamento</option>
+            <option v-for="item in listDepartamento" :key="item.departamento" :value="item.departamento" class="dark:bg-gray-900 dark:text-gray-400 bg-gray-200 font-Outfit rounded-xl">
                             {{ item.departamento }}
             </option>
         </select>
     </div>
-    <div class=" overflow-hidden rounded-xl border-gray-800 bg-white/[0.03] mt-4">
+    <div class=" overflow-hidden rounded-xl border-gray-800 bg-gray-300 dark:bg-white/[0.03] mt-4">
         <input type="text" placeholder="Buscar usuario" class=" bg-gray-400/70 p-2.5 font-Outfit rounded-lg mt-4 mb-2 mx-3">
         <div class=" max-w-sm overflow-x-visible custom-scrollbar md:max-w-xl">
             <table class=" min-w-sm md:min-w-xl">
                 <thead>
                     <tr class=" border-b border-gray-700">
                        <th class="px-5 py-3 text-left w-3/11">
-                        <p class=" font medium text-gray-500 text-sm text-theme-xs">Municipios</p>
+                        <p class=" font medium text-gray-500 font-Outfit text-sm text-theme-xs">Municipios</p>
                        </th>
                        <th class="px-5 py-3 text-left w-3/11">
-                        <p class=" font medium text-gray-500 text-sm text-theme-xs">Asignar</p>
+                        <p class=" font medium text-gray-500 font-Outfittext-sm text-theme-xs">Asignar</p>
                        </th>
                        
                     </tr>   

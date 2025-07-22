@@ -34,14 +34,19 @@
       <h3 class="font-md font-semibold mx-4 text-white">
         <slot name="title">Título</slot>
       </h3>
-      <div class="flex items-center">
+      <div class="flex items-center space-x-2">
         <img src="../assets/images/user.png" alt="#" class="bg-cover bg-no-repeat w-10 h-10 bg-slate-900 rounded-full mx-4 ">
+        <span @click="toggleDarkmode" class=" cursor-pointer flex items-center rounded-full border border-gray-500 p-1">
+          <i v-if="isDark" class="pi pi-moon text-yellow-400 text-md"></i>
+          <i v-else class="pi pi-sun text-white text-md"></i>
+        </span>
         <span @click="cerrarSesion"><i class="pi pi-power-off text-white w-10 cursor-pointer"></i></span>
       </div>
+      
     </div>
 
     <!-- Contenido principal -->
-    <div class="bg-slate-950 min-h-screen min-w-screen">
+    <div :class="isDark ? 'bg-slate-950' : 'bg-gray-300/30'" class="min-h-screen transition-colors duration-300">
       <slot />
     </div>
   </div>
@@ -56,7 +61,15 @@ export default {
   name: "Sidebar",
   data() {
     return {
-      menuAbierto: false
+      menuAbierto: false,
+      isDark:Cookies.get('modo')==='dark'
+    }
+  },
+  mounted(){
+    if (this.isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
   },
   methods: {
@@ -72,6 +85,17 @@ export default {
       Cookies.remove('usuario');
       this.$router.push('/');
     },
+    toggleDarkmode(){
+      this.isDark= !this.isDark;
+      if (this.isDark) {
+        document.documentElement.classList.add('dark');
+        Cookies.set('modo','dark');
+        
+      }else{
+        document.documentElement.classList.remove('dark');
+        Cookies.set('modo','light');
+      }
+    }
     
   }
 }

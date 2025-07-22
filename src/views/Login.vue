@@ -104,7 +104,7 @@ export default{
                 </div>
             </form>
             <div class="block mt-5">
-                <button type="button" @click="envioLogin" class=" w-full bg-blue-800 font-Outfit rounded-lg p-3 text-white hover:bg-blue-900">Ingresar</button>
+                <button type="button" @click="envioLogin" class=" w-full bg-blue-800 font-Outfit rounded-lg p-3 text-white hover:bg-blue-700 cursor-pointer">Ingresar</button>
             </div>
         </div>
         
