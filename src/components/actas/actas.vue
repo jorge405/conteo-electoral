@@ -227,21 +227,21 @@ export default{
 </script>
 
 <template>
-<div class="flex flex-col items-center justify-center mx-2 mt-4 bg-gray-900 min-h-screen w-full">
-    <div class="overflow-hidden rounded-xl border-gray-800 bg-white/[0.03] mt-4 md:w-3xl">
-        <input type="text" v-model="searchRecinto" placeholder="Buscar recinto" class="bg-gray-400/70 p-2.5 font-Outfit rounded-lg mt-4 mb-2 mx-3">
+<div class="flex flex-col items-center justify-center    xl:dark:min-h-screen lg:dark:min-h-screen w-full overflow-x-visible">
+    <div class="overflow-hidden rounded-xl border-gray-800 bg-white/90 dark:bg-white/[0.03] sm:mt-4 mt-4 md:w-2xl mx-auto">
+        <input type="text" v-model="searchRecinto" placeholder="Buscar recinto" class="bg-gray-300/70 p-2.5 font-Outfit rounded-lg mt-4 mb-2 mx-3">
         <div v-if="!listRecinto" class="flex justify-center items-center py-10">
-            <span class="text-white text-lg font-Outfit"> Cargando recintos...</span>
+            <span class="text-slate-950 dark:text-white text-lg font-Outfit"> Cargando recintos...</span>
         </div>
-        <div v-else class="max-w-sm overflow-x-visible custom-scrollbar ">
+        <div v-else class="max-w-sm  overflow-x-visible custom-scrollbar  ">
             <table class="min-w-sm md:min-w-3xl ">
                 <thead>
                     <tr class="border-b border-gray-700">
                         <th class="px-5 py-3 text-left w-3/11">
-                            <p class="font medium text-gray-500 text-sm text-theme-xs">Recintos</p>
+                            <p class="font-medium text-gray-500 text-sm text-theme-xs">Recintos</p>
                         </th>
                         <th class="px-5 py-3 text-left w-3/11">
-                            <p class="font medium text-gray-500 text-sm text-theme-xs">Subir acta</p>
+                            <p class="font-medium text-gray-500 text-sm text-theme-xs">Subir acta</p>
                         </th>
                     </tr>
                 </thead>
@@ -250,14 +250,14 @@ export default{
                         <td class="px-5 py-4 ">
                             <div class="flex items-center gap-3">
                                 <div>
-                                    <span class="block font-light text-sm font-Outfit text-theme-sm text-white/90">{{ rec.recinto }}</span>
+                                    <span class="block font-normal text-sm font-Outfit text-theme-sm text-slate-950 dark:text-white/90">{{ rec.recinto }}</span>
                                 </div>
                             </div>
                         </td>
                         <td class="px-5 py-4 ">
                             <div class="flex items-center gap-3">
-                                <div class="border border-gray-700 rounded-full p-2 hover:bg-blue-600 cursor-pointer" @click="abrirModal(rec)">
-                                    <i class="pi pi-upload text-white"></i>
+                                <div class="border border-orange-700 bg-orange-600 dark:border-gray-700 dark:bg-gray-800 rounded-full p-2 dark:hover:bg-blue-600 hover:bg-orange-500 cursor-pointer" @click="abrirModal(rec)">
+                                    <i class="pi pi-upload text-white dark:text-white"></i>
                                 </div>
                             </div>
                         </td>
@@ -295,15 +295,15 @@ export default{
      leave-from-class=" opacity-100 scale-100"
      leave-to-class=" opacity-0 scale-95">
         <div v-if="modalVisible" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-    <div class="bg-gray-900 flex flex-col items-center justify-center mt-5 mx-4 rounded-lg py-10 px-5 w-full max-w-md relative">
+    <div class="bg-white/90 dark:bg-gray-900 flex flex-col items-center justify-center mt-5 mx-4 rounded-lg py-10 px-5 w-full max-w-md relative">
         <!-- Icono X para cerrar -->
-        <button type="button" @click="cerrarModal" class="absolute top-4 right-4 text-gray-300 hover:text-red-500 text-2xl transition">
+        <button type="button" @click="cerrarModal" class="absolute top-4 right-4 text-slate-900 dark:text-gray-300 hover:text-red-500 text-2xl transition">
             <i class="pi pi-times"></i>
         </button>
         <form method="post" class="w-full">
             <div class="block mb-4">
-                <label class="text-white font-light font-Outfit font-sm mb-4">Subir imagen</label>
-                <input type="file" accept="image/*" capture="environment" @change="subirImagen" class="block w-full text-sm text-gray-200
+                <label class="text-slate-900 dark:text-white font-normal font-Outfit font-sm mb-4">Subir imagen</label>
+                <input type="file" accept="image/*" capture="environment" @change="subirImagen" class="block w-full text-sm text-white/90 dark:text-gray-200
                     file:mr-4 file:py-2 file:px-4
                     file:rounded-lg file:border-0
                     file:text-sm file:font-Outfit
@@ -312,37 +312,37 @@ export default{
                     bg-gray-800 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition"  />
             </div>
             <div class=" block mb-4">
-                <label  class=" text-white font-light font-Outfit font-sm mb-4 ">Nombre del archivo</label>
+                <label  class=" text-slate-900 dark:text-white font-normal font-Outfit font-sm mb-4 ">Nombre del archivo</label>
                 <input type="text" v-model="nombreFoto"  placeholder="Escribe el nombre de la foto" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
                 
             </div>
             <div class="block mb-4">
-                <label class="text-white font-light font-Outfit font-sm mb-4">Codigo Mesa</label>
+                <label class="text-slate-900 dark:text-white font-normal font-Outfit font-sm mb-4">Codigo Mesa</label>
                 <input type="text" v-model="cod_mesa" placeholder="ingrese codigo mesa" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
                 <span v-if="cod_mesa===''" inputmode="numeric" pattern="[0-9]*" class=" text-red-600 text-sm font-Outfit"> Campo requerido!</span>
             </div>
             <div class="block mb-4">
-                <label class="text-white font-light font-Outfit font-sm mb-2">Nro Mesa</label>
+                <label class=" text-slate-900 dark:text-white font-normal font-Outfit font-sm mb-2">Nro Mesa</label>
                 <input type="text" v-model="nro_mesa" placeholder="ingrese nro mesa" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
                 <span v-if="nro_mesa===''" inputmode="numeric" pattern="[0-9]*" class=" text-red-600 text-sm font-Outfit"> Campo requerido!</span>
             </div>
             <div class="mb-4 grid grid-cols-2 gap-x-2">
                 <div>
-                    <label class="text-white font-light font-Outfit font-sm mb-2">Cantidad votos</label>
+                    <label class="text-slate-900 dark:text-white font-normal font-Outfit font-sm mb-2">Cantidad votos</label>
                     <input type="number" inputmode="numeric" pattern="[0-9]*" v-model="cant_votos"  class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
                 </div>
                 <div class="">
-                    <label class="text-white font-light font-Outfit font-sm mb-2">Votos nulos</label>
+                    <label class="text-slate-900 dark:text-white font-normal font-Outfit font-sm mb-2">Votos nulos</label>
                     <input type="number" inputmode="numeric" pattern="[0-9]*" v-model="voto_nulo"  class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-x-2 mb-4">
                 <div>
-                    <label class="text-white font-light font-Outfit font-sm mb-2">Votos blancos</label>
+                    <label class="text-slate-900 dark:text-white font-normal font-Outfit font-sm mb-2">Votos blancos</label>
                     <input type="number" inputmode="numeric" pattern="[0-9]*" v-model="voto_blanco"  class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
                 </div>
                 <div class="">
-                    <label class="text-white font-light font-Outfit font-sm mb-2">Votos validos</label>
+                    <label class="text-slate-900 dark:text-white font-normal font-Outfit font-sm mb-2">Votos validos</label>
                     <input type="number" inputmode="numeric" pattern="[0-9]*" v-model="voto_valido"  class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
                 </div>
             </div>
