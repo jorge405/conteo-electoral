@@ -8,15 +8,27 @@ const notyf= Notyf();
 export default{
     data(){
         return{
-
+            listActas:null,
+            clave:''    
         }
     },
     methods:{
         listActas(){
+            const decryptMunicipio= CryptoJS.AES.decrypt(Cookies.get('municipio'),this.clave).toString(CryptoJS.enc.Utf8);
             try {
-                api.post('')
+                api.post('lista_acta',{
+                    tipo:'municipio',
+                    nombre:''
+                })
+                .then(response=>{
+                    if (response.data.status==='ok') {
+                        this.listActas=response.data
+                    }else{
+                        notyf.error('Error al cargar las actas');
+                    }
+                })
             } catch (error) {
-                
+                console.log('error en el servidor:', error)    
             }
         }
     }
