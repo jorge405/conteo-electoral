@@ -72,18 +72,17 @@ export default{
         }
     },
     computed:{
+        paginatedActa(){
+            let filtered= this.listActas ? this.listActas.filter(rec=> rec.nro.toLowerCase().includes(this.searchActas.toLocaleLowerCase()) || rec.codigo.toLocaleLowerCase().includes(this.searchActas.toLocaleLowerCase()) ) :[];
+            const start = (this.currentPage - 1) * this.itemsPerPage;
+            return filtered.slice(start, start + this.itemsPerPage);
+        },
         totalPages(){
-            if (!this.listRecinto) return 1;
-            // Calcula páginas según el filtro
-            const filtered = this.listRecinto
-                ? this.listRecinto.filter(r =>
-                    r.recinto.toLowerCase().includes(this.searchRecinto.toLowerCase())
-                  )
-                : [];
-            return Math.ceil(filtered.length / this.itemsPerPage);
+             let filtered= this.listActas ? this.listActas.filter(rec=> rec.nro.toLowerCase().includes(this.searchActas.toLocaleLowerCase()) || rec.codigo.toLocaleLowerCase().includes(this.searchActas.toLocaleLowerCase()) ) :[];
+            return Math.ceil(filtered.length / this.itemsPerPage); 
         }
     }
-}
+} 
 </script>
 
 
@@ -129,7 +128,7 @@ export default{
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-700">
-                    <tr v-for="(ac,index) in listActas" :key="index" class="border-t border-gray-800">
+                    <tr v-for="(ac,index) in paginatedActa" :key="index" class="border-t border-gray-800">
                         <td class="px-5 py-4 ">
                             <div class="flex items-center gap-3">
                                 <div>
@@ -196,7 +195,7 @@ export default{
                     </tr>
                 </tbody>
             </table>
-            <!--<div class="flex justify-center items-center mt-4 mb-4 space-x-2">
+            <div class="flex justify-center items-center mt-4 mb-4 space-x-2">
                 <button
                     @click="goToPage(currentPage - 1)"
                     :disabled="currentPage === 1"
@@ -214,7 +213,7 @@ export default{
                 >
                     Siguiente
                 </button>
-            </div>-->
+            </div>
         </div>
     </div>
 

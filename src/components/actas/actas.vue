@@ -26,9 +26,15 @@ export default{
             voto_nulo:0,
             voto_valido:0,
             searchRecinto:'',
+            searchActa:'',
             imageID:'',
             imageFile:'',
-            municipio:''
+            municipio:'',
+            showModal:false,
+            showModalImagen:false,
+            recintoSeleccionado:'',
+            listActaRecinto:null,
+            numActas:null
 
         }
     },
@@ -56,9 +62,34 @@ export default{
             this.imageID='';
 
         },
+        abrirModal2(recinto){
+            this.showModal=true
+            try {
+                api.post('lista_acta',{
+                    tipo:'recinto',
+                    nombre:recinto.recinto
+                })
+                .then(response=>{
+                    this.listActaRecinto=response.data.data
+                    this.recintoSeleccionado=recinto.recinto;
+                    const numActas= response.data.data.length;
+                    this.numActas= numActas;
+                })
+            } catch (error) {
+                console.log('ha ocurrido un error al obtener las actas por recinto:', error)
+            }
+        },
+        cerrarModal2(){
+            this.showModal=false;
+        },
         
         goToPage(page){
             if (page >= 1 && page <= this.totalPages) {
+                this.currentPage= page;
+            }
+        },
+        goToPageActa(page){
+            if (page >= 1 && page <= this.totalPagesActa) {
                 this.currentPage= page;
             }
         },
@@ -185,6 +216,13 @@ export default{
             } catch (error) {
                 console.log('ha ocurrido un error al registrar acta', error)
             }
+        },
+        abrirModalImagen(idImagen){
+            this.imagenUrl =`https://actas.mittril.com/api/image/${idImagen}`
+            this.showModalImagen=true
+        },
+        cerrarModalImagen(){
+            this.showModalImagen=false;
         }
     },
     computed:{
@@ -207,13 +245,22 @@ export default{
                   )
                 : [];
             return Math.ceil(filtered.length / this.itemsPerPage);
+        },
+        paginatedActa(){
+            let filtered= this.listActaRecinto ? this.listActaRecinto.filter(rec=> rec.nro.toLowerCase().includes(this.searchActa.toLocaleLowerCase()) || rec.codigo.toLocaleLowerCase().includes(this.searchActa.toLocaleLowerCase()) ) :[];
+            const start = (this.currentPage - 1) * this.itemsPerPage;
+            return filtered.slice(start, start + this.itemsPerPage);
+        },
+        totalPagesActa(){
+            let filtered= this.listActaRecinto ? this.listActaRecinto.filter(rec=> rec.nro.toLowerCase().includes(this.searchActa.toLocaleLowerCase()) || rec.codigo.toLocaleLowerCase().includes(this.searchActa.toLocaleLowerCase()) ) :[];
+            return Math.ceil(filtered.length / this.itemsPerPage); 
         }
     },
-    watch:{
+    watch:{  
         permiso(newval){
             this.listaRecinto();
         },
-        nombreFoto(newval){
+        nombreFoto(newval){ 
 
         },
         cod_mesa(newval){
@@ -272,9 +319,9 @@ export default{
                         </td>
                         <td class="px-5 py-4 ">
                             <div class="flex items-center gap-3">
-                                <div class="border border-orange-700 bg-orange-600 dark:border-gray-700 dark:bg-gray-800 rounded-full p-1 dark:hover:bg-blue-600 hover:bg-orange-500 cursor-pointer space-x-1" @click="abrirModal(rec)">
+                                <div class="border border-orange-700 bg-orange-600 dark:border-gray-700 dark:bg-gray-800 rounded-full p-1 dark:hover:bg-blue-600 hover:bg-orange-500 cursor-pointer space-x-1" @click="abrirModal2(rec)">
                                     <i class="pi pi-file text-white dark:text-white"></i>
-                                    <span class=" text-white font-medium font-Outfit text-sm">4</span>
+                                    <span class=" text-white font-medium font-Outfit text-sm">{{ numActas }}</span>
                                 </div>
                             </div>
                         </td>
@@ -368,6 +415,175 @@ export default{
     </div>
         </div>
 </transition>
-    
+
+ <!-- mostrar esta tabla como modal tabla por recinto -->
+<transition name="fade">
+  <div
+    v-if="showModal"
+    class="fixed inset-0 z-50 flex items-center justify-center  bg-white/10 backdrop-blur-sm transition-all duration-300"
+  >
+    <div class="bg-gray-400/70 dark:bg-gray-900 rounded-xl p-6 shadow-lg w-full max-w-3xl relative scale-95 opacity-0 animate-modalIn">
+      <button @click="cerrarModal2" class="absolute top-2 right-2 text-slate-950 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white text-2xl">&times;</button>
+      <h2 class="text-slate-800 dark:text-white text-lg mb-4 font-bold">
+        Recinto: <span class="text-blue-600">{{ recintoSeleccionado }}</span>
+      </h2>
+      <input type="text" v-model="searchActa" placeholder="Buscar acta" class=" bg-gray-400/70 w-full p-2.5 font-Outfit rounded-lg mb-4 focus:outline-gray-400/90 dark:focus:outline-slate-900">
+      <div class="overflow-hidden rounded-xl border-gray-800 bg-white/[0.03]">
+        <div class="max-w-sm overflow-x-visible custom-scrollbar">
+          <table class="min-w-sm md:min-w-xl">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            
+                            <th class="px-5 py-3 text-left w-3/11">
+                                <p class="font medium text-slate-800 dark:text-gray-500 text-sm text-theme-xs">Nro Mesa</p>
+                            </th>
+                            <th class="px-5 py-3 text-left w-3/11">
+                                <p class="font medium text-slate-800 dark:text-gray-500 text-sm text-theme-xs">Codigo Mesa</p>
+                            </th>
+                            <th class="px-5 py-3 text-left w-3/11">
+                                <p class="font medium text-slate-800 dark:text-gray-500 text-sm text-theme-xs">Municipio</p>
+                            </th>
+                            <th class="px-5 py-3 text-left w-3/11">
+                                <p class="font medium text-slate-800 dark:text-gray-500 text-sm text-theme-xs">Cantidad Votos</p>
+                            </th> 
+                            <th class="px-5 py-3 text-left w-3/11">
+                                <p class="font medium text-slate-800 dark:text-gray-500 text-sm text-theme-xs">Votos Validos</p>
+                            </th>
+                            <th class="px-5 py-3 text-left w-3/11">
+                                <p class="font medium text-slate-800 dark:text-gray-500 text-sm text-theme-xs">Votos Nulos</p>
+                            </th>
+                            <th class="px-5 py-3 text-left w-3/11">
+                                <p class="font medium text-slate-800 dark:text-gray-500 text-sm text-theme-xs">Votos Blanco</p>
+                            </th>
+                            <th class="px-5 py-3 text-left w-3/11">
+                                <p class="font medium text-slate-800 dark:text-gray-500 text-sm text-theme-xs">Imagen</p>
+                            </th>
+                        </tr>    
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        <tr v-for="(ac,index) in paginatedActa" :key="index" class="border-t border-gray-800" >
+                            
+                            <td class="px-5 py-4 ">
+                                <div class="flex items-center gap-3">
+                                    <div>
+                                        <span class="block font-normal text-sm font-Outfit text-theme-sm text-slate-800 dark:text-white/90">{{ ac.nro }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-5 py-4 ">
+                                <div class="flex items-center gap-3">
+                                    <div>
+                                        <span class="block font-normal text-sm font-Outfit text-theme-sm text-slate-800 dark:text-white/90">{{ ac.codigo }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-5 py-4 ">
+                                <div class="flex items-center gap-3">
+                                    <div>
+                                        <span class="block font-normal text-sm font-Outfit text-theme-sm text-slate-800 dark:text-white/90">{{ ac.municipio }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-5 py-4 ">
+                                <div class="flex items-center gap-3">
+                                    <div>
+                                        <span class="block font-normal text-sm font-Outfit text-theme-sm text-slate-800 dark:text-white/90">{{ ac.cant_votos }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-5 py-4 ">
+                                <div class="flex items-center gap-3">
+                                    <div>
+                                        <span class="block font-normal text-sm font-Outfit text-theme-sm text-slate-800 dark:text-white/90">{{ ac.votos_validos}}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-5 py-4 ">
+                                <div class="flex items-center gap-3">
+                                    <div>
+                                        <span class="block font-normal text-sm font-Outfit text-theme-sm text-slate-800 dark:text-white/90">{{ ac.votos_nulos }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-5 py-4 ">
+                                <div class="flex items-center gap-3">
+                                    <div>
+                                        <span class="block font-normal text-sm font-Outfit text-theme-sm text-slate-800 dark:text-white/90">{{ ac.votos_blancos }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <td class="px-5 py-4 ">
+                            <div class="flex items-center gap-3">
+                                <div class="border border-orange-700 bg-orange-600 hover:bg-orange-500 dark:bg-slate-800  dark:border-gray-700 rounded-full p-2 dark:hover:bg-blue-600 cursor-pointer" @click="abrirModalImagen(ac.acta)">
+                                    <i class="pi pi-images text-white"></i>
+                                </div>
+                            </div>
+                        </td>
+                        </tr>
+                    </tbody>
+                </table>
+        </div>    
+      </div>
+        <div class="flex justify-center items-center mt-4 mb-4 space-x-2">
+                    <button
+                        @click="goToPageActa(currentPage - 1)"
+                        :disabled="currentPage === 1"
+                        class="px-3 py-1 rounded bg-gray-800 text-white/80 hover:bg-gray-700 disabled:opacity-50"
+                    >
+                        Anterior
+                    </button>
+                    <span class="text-white/80 bg-gray-900 px-3 py-1 rounded">
+                        Página {{ currentPage }} de {{ totalPagesActa }}
+                    </span>
+                    <button
+                        @click="goToPageActa(currentPage + 1)"
+                        :disabled="currentPage === totalPagesActa"
+                        class="px-3 py-1 rounded bg-gray-800 text-white/80 hover:bg-gray-700 disabled:opacity-50"
+                    >
+                        Siguiente
+                    </button>
+            </div> 
+    </div>
+  </div> 
+</transition>
+<transition
+     enter-active-class="transition duration-300 ease-out"
+     enter-from-class="opacity-0 scale-95"
+     enter-to-class=" opacity-100 scale-100"
+     leave-active-class=" transition duration-200 ease-in"
+     leave-from-class=" opacity-100 scale-100"
+     leave-to-class=" opacity-0 scale-95">
+        <div v-if="showModalImagen" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div class="bg-white/10 backdrop-blur-sm dark:bg-gray-900 flex flex-col items-center justify-center mt-5 mx-4 rounded-lg py-10 px-5 w-full max-w-md relative">
+        
+        <button type="button" @click="cerrarModalImagen" class="absolute top-4 right-4 text-gray-300 hover:text-red-500 text-2xl transition">
+            <i class="pi pi-times"></i>
+        </button>
+        <img :src="imagenUrl" alt="Imagen acta" class="rounded-lg max-h-[70vh] object-contain">    
+    </div>
+        </div>
+</transition>    
 </div>
 </template>
+
+
+<style scope>
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95);}
+  to { opacity: 1; transform: scale(1);}
+}
+.animate-modalIn {
+  animation: modalIn 0.3s ease;
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+</style>
