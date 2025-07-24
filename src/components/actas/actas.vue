@@ -27,7 +27,8 @@ export default{
             voto_valido:0,
             searchRecinto:'',
             imageID:'',
-            imageFile:''
+            imageFile:'',
+            municipio:''
 
         }
     },
@@ -69,6 +70,7 @@ export default{
                 .then(response=>{
                     if (!response.data.entry==[]) {
                         this.permiso=response.data.entry;
+                        this.municipio=this.permiso[0].municipio
                         const encryptMunicipio= CryptoJS.AES.encrypt(this.permiso[0].municipio.replace(/ /g, '-'),this.clave).toString();
                         Cookies.set('municipio',encryptMunicipio)
                     }else{
@@ -229,7 +231,10 @@ export default{
 <template>
 <div class="flex flex-col items-center justify-center    xl:dark:min-h-screen lg:dark:min-h-screen w-full overflow-x-visible">
     <div class="overflow-hidden rounded-xl border-gray-800 bg-white/90 dark:bg-white/[0.03] sm:mt-4 mt-4 md:w-2xl mx-auto">
-        <input type="text" v-model="searchRecinto" placeholder="Buscar recinto" class="bg-gray-300/70 p-2.5 font-Outfit rounded-lg mt-4 mb-2 mx-3">
+        
+            <input type="text" v-model="searchRecinto" placeholder="Buscar recinto" class="bg-gray-300/70 p-2.5 font-Outfit rounded-lg mt-4 mb-2 mx-3">
+            <span class=" block font-medium font-Outfit text-slate-800 sm:text-sm lg:text-lg dark:text-white ml-4 md:ml-4 lg:ml-4 xl:ml-4">Municipio: <p class=" inline text-blue-700 font-medium font-Outfit sm:text-sm lg:text-lg">{{municipio}}</p></span>
+        
         <div v-if="!listRecinto" class="flex justify-center items-center py-10">
             <span class="text-slate-950 dark:text-white text-lg font-Outfit"> Cargando recintos...</span>
         </div>
@@ -243,6 +248,10 @@ export default{
                         <th class="px-5 py-3 text-left w-3/11">
                             <p class="font-medium text-gray-500 text-sm text-theme-xs">Subir acta</p>
                         </th>
+                        <th class="px-5 py-3 text-left w-3/11">
+                            <p class=" font-medium text-gray-500 text-sm text-theme-xs">Actas</p>
+                        </th>
+
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-700">
@@ -258,6 +267,14 @@ export default{
                             <div class="flex items-center gap-3">
                                 <div class="border border-orange-700 bg-orange-600 dark:border-gray-700 dark:bg-gray-800 rounded-full p-2 dark:hover:bg-blue-600 hover:bg-orange-500 cursor-pointer" @click="abrirModal(rec)">
                                     <i class="pi pi-upload text-white dark:text-white"></i>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 ">
+                            <div class="flex items-center gap-3">
+                                <div class="border border-orange-700 bg-orange-600 dark:border-gray-700 dark:bg-gray-800 rounded-full p-1 dark:hover:bg-blue-600 hover:bg-orange-500 cursor-pointer space-x-1" @click="abrirModal(rec)">
+                                    <i class="pi pi-file text-white dark:text-white"></i>
+                                    <span class=" text-white font-medium font-Outfit text-sm">4</span>
                                 </div>
                             </div>
                         </td>

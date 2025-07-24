@@ -11,8 +11,11 @@ export default{
         return{
             listActas:null,
             clave:'conteoElectoralmittril',
-            //currentPage:1,
-            searchActas:''
+            currentPage:1,
+            searchActas:'',
+            itemsPerPage:10,
+            modalVisible:false,
+            imagenUrl:'',
             
         }
     },
@@ -21,15 +24,21 @@ export default{
         this.listarActas()
     }, 
     methods:{
-        /*goToPage(page) {
+        abrirModalImagen(idImagen){
+            this.imagenUrl =`https://actas.mittril.com/api/image/${idImagen}`
+            this.modalVisible= true
+        },
+        cerrarModal(){
+            this.modalVisible= false;
+            this.imagenUrl= ''
+        },
+        goToPage(page) {
              if (page >= 1 && page <= this.totalPages) {
                 this.currentPage= page;
             }
-        }, */
+        }, 
         listarActas(){
             const decryptUsuario=CryptoJS.AES.decrypt(Cookies.get('usuario'),this.clave).toString(CryptoJS.enc.Utf8);
-            
-            
                 try {
                 api.get(`lista_permiso/${decryptUsuario}`)
                 .then(response=>{
@@ -63,7 +72,7 @@ export default{
         }
     },
     computed:{
-        /*totalPages(){
+        totalPages(){
             if (!this.listRecinto) return 1;
             // Calcula páginas según el filtro
             const filtered = this.listRecinto
@@ -72,7 +81,7 @@ export default{
                   )
                 : [];
             return Math.ceil(filtered.length / this.itemsPerPage);
-        } */
+        }
     }
 }
 </script>
@@ -81,20 +90,41 @@ export default{
 
 <template>
 <div class="flex flex-col items-center justify-center mx-2 mt-4  w-full">
-    <div class="overflow-hidden rounded-xl border-gray-800 bg-white/[0.03] mt-4">
-        <input type="text" v-model="searchActas" placeholder="Buscar actas" class="bg-gray-400/70 p-2.5 font-Outfit rounded-lg mt-4 mb-2 mx-3">
+    <div class="overflow-hidden rounded-xl border-gray-800  bg-white/90 dark:bg-white/[0.03] mt-4">        
+        <input type="text" v-model="searchActas" placeholder="Buscar actas" class="bg-gray-300/70 dark:focus:outline-slate-900 focus:outline-gray-300 p-2.5 font-Outfit rounded-lg mt-4 mb-2 mx-3">
         <div v-if="!listActas" class="flex justify-center items-center py-10">
-            <span class="text-white text-lg font-Outfit"> Cargando Actas...</span>
+            <span class="text-slate-800 dark:text-white text-lg font-Outfit"> Cargando Actas...</span>
         </div>
-        <div v-else class="max-w-sm overflow-x-visible custom-scrollbar">
-            <table class="min-w-sm">
+        <div v-else class="sm:max-w-sm md:max-w-3xl lg:max-w-5xl  sm:overflow-x-auto lg:custom-scrollbar">
+            <table class="min-w-sm ">
                 <thead>
                     <tr class="border-b border-gray-700">
                         <th class="px-5 py-3 text-left w-3/11">
-                            <p class="font medium text-gray-500 text-sm text-theme-xs">Municipio</p>
+                            <p class="font-medium text-gray-500 text-sm text-theme-xs">Nro Mesa</p>
                         </th>
                         <th class="px-5 py-3 text-left w-3/11">
-                            <p class="font medium text-gray-500 text-sm text-theme-xs">Recinto</p>
+                            <p class="font-medium text-gray-500 text-sm text-theme-xs">Codigo Mesa</p>
+                        </th>
+                        <th class="px-5 py-3 text-left w-3/11">
+                            <p class="font-medium text-gray-500 text-sm text-theme-xs">Municipio</p>
+                        </th>
+                        <th class="px-5 py-3 text-left w-3/11">
+                            <p class="font-medium text-gray-500 text-sm text-theme-xs">Recinto</p>
+                        </th>
+                        <th class="px-5 py-3 text-left w-3/11">
+                            <p class="font-medium text-gray-500 text-sm text-theme-xs">Cantidad votos</p>
+                        </th>
+                        <th class="px-5 py-3 text-left w-3/11">
+                            <p class="font-medium text-gray-500 text-sm text-theme-xs">votos validos</p>
+                        </th>
+                        <th class="px-5 py-3 text-left w-3/11">
+                            <p class="font-medium text-gray-500 text-sm text-theme-xs">votos nulos</p>
+                        </th>
+                        <th class="px-5 py-3 text-left w-3/11">
+                            <p class="font-medium text-gray-500 text-sm text-theme-xs">votos blanco</p>
+                        </th>
+                        <th class="px-5 py-3 text-left w-3/11">
+                            <p class="font-medium text-gray-500 text-sm text-theme-xs">Imagen</p>
                         </th>
                     </tr>
                 </thead>
@@ -103,24 +133,66 @@ export default{
                         <td class="px-5 py-4 ">
                             <div class="flex items-center gap-3">
                                 <div>
-                                    <span class="block font-light text-sm font-Outfit text-theme-sm text-white/90">{{ ac.municipio }}</span>
+                                    <span class="block font-medium text-sm font-Outfit text-theme-sm text-slate-900 dark:text-white/90">{{ ac.nro }}</span>
                                 </div>
                             </div>
                         </td>
                         <td class="px-5 py-4 ">
                             <div class="flex items-center gap-3">
                                 <div>
-                                    <span class="block font-light text-sm font-Outfit text-theme-sm text-white/90">{{ ac.recinto }}</span>
+                                    <span class="block font-medium text-sm font-Outfit text-theme-sm text-slate-900 dark:text-white/90">{{ ac.codigo }}</span>
                                 </div>
                             </div>
                         </td>
-                        <!--<td class="px-5 py-4 ">
+                        <td class="px-5 py-4 ">
                             <div class="flex items-center gap-3">
-                                <div class="border border-gray-700 rounded-full p-2 hover:bg-blue-600 cursor-pointer" @click="abrirModal(rec)">
-                                    <i class="pi pi-upload text-white"></i>
+                                <div>
+                                    <span class="block font-medium text-sm font-Outfit text-theme-sm text-slate-900 dark:text-white/90">{{ ac.municipio }}</span>
                                 </div>
                             </div>
-                        </td> -->
+                        </td>
+                        <td class="px-5 py-4 ">
+                            <div class="flex items-center gap-3">
+                                <div>
+                                    <span class="block font-medium text-sm font-Outfit text-theme-sm text-slate-900 dark:text-white/90">{{ ac.recinto }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 ">
+                            <div class="flex items-center gap-3">
+                                <div>
+                                    <span class="block font-medium text-sm font-Outfit text-theme-sm text-slate-900 dark:text-white/90">{{ ac.cant_votos }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 ">
+                            <div class="flex items-center gap-3">
+                                <div>
+                                    <span class="block font-medium text-sm font-Outfit text-theme-sm text-slate-900 dark:text-white/90">{{ ac.votos_validos }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 ">
+                            <div class="flex items-center gap-3">
+                                <div>
+                                    <span class="block font-medium text-sm font-Outfit text-theme-sm text-slate-900 dark:text-white/90">{{ ac.votos_nulos }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 ">
+                            <div class="flex items-center gap-3">
+                                <div>
+                                    <span class="block font-medium text-sm font-Outfit text-theme-sm text-slate-900 dark:text-white/90">{{ ac.votos_blancos }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 ">
+                            <div class="flex items-center gap-3">
+                                <div class="border border-orange-700 bg-orange-600 hover:bg-orange-500 dark:bg-slate-800  dark:border-gray-700 rounded-full p-2 dark:hover:bg-blue-600 cursor-pointer" @click="abrirModalImagen(ac.acta)">
+                                    <i class="pi pi-images text-white"></i>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -147,7 +219,7 @@ export default{
     </div>
 
     <!-- Modal -->
-     <!--<transition
+     <transition
      enter-active-class="transition duration-300 ease-out"
      enter-from-class="opacity-0 scale-95"
      enter-to-class=" opacity-100 scale-100"
@@ -160,54 +232,10 @@ export default{
         <button type="button" @click="cerrarModal" class="absolute top-4 right-4 text-gray-300 hover:text-red-500 text-2xl transition">
             <i class="pi pi-times"></i>
         </button>
-        <form method="post" class="w-full">
-            <div class="block mb-4">
-                <label class="text-white font-light font-Outfit font-sm mb-4">Subir imagen</label>
-                <input type="file" accept="image/*" capture="environment" @change="subirImagen" class="block w-full text-sm text-gray-200
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-lg file:border-0
-                    file:text-sm file:font-Outfit
-                    file:bg-blue-600 file:text-white
-                    hover:file:bg-blue-700
-                    bg-gray-800 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition"  />
-            </div>
-            <div class=" block mb-4">
-                <label  class=" text-white font-light font-Outfit font-sm mb-4 ">Nombre del archivo</label>
-                <input type="text" v-model="nombreFoto" placeholder="Escribe el nombre de la foto" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
-            </div>
-            <div class="block mb-4">
-                <label class="text-white font-light font-Outfit font-sm mb-4">Codigo Mesa</label>
-                <input type="text" v-model="cod_mesa" placeholder="ingrese codigo mesa" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
-            </div>
-            <div class="block mb-4">
-                <label class="text-white font-light font-Outfit font-sm mb-2">Nro Mesa</label>
-                <input type="text" v-model="nro_mesa" placeholder="ingrese nro mesa" class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
-            </div>
-            <div class="mb-4 grid grid-cols-2 gap-x-2">
-                <div>
-                    <label class="text-white font-light font-Outfit font-sm mb-2">Cantidad votos</label>
-                    <input type="number" inputmode="numeric" pattern="[0-9]*" v-model="cant_votos"  class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
-                </div>
-                <div class="">
-                    <label class="text-white font-light font-Outfit font-sm mb-2">Votos nulos</label>
-                    <input type="number" inputmode="numeric" pattern="[0-9]*" v-model="voto_nulo"  class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-x-2 mb-4">
-                <div>
-                    <label class="text-white font-light font-Outfit font-sm mb-2">Votos blancos</label>
-                    <input type="number" inputmode="numeric" pattern="[0-9]*" v-model="voto_blanco"  class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
-                </div>
-                <div class="">
-                    <label class="text-white font-light font-Outfit font-sm mb-2">Votos validos</label>
-                    <input type="number" inputmode="numeric" pattern="[0-9]*" v-model="voto_valido"  class="bg-gray-300/70 font-Outfit text-sm rounded-lg w-full border border-gray-400 p-2">
-                </div>
-            </div>
-            <button type="button" @click="subirActa" class="bg-blue-600 text-white font-medium font-Outfit w-full p-2.5 rounded-lg mt-5">Registrar Acta</button>
-        </form>
+        <img :src="imagenUrl" alt="Imagen acta" class="rounded-lg max-h-[70vh] object-contain">    
     </div>
         </div>
-</transition>-->
+</transition>
     
 </div>
 
